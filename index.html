@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="The JointJS+ Kitchen Sink application serves as a template to help bring your idea to life in no time.">
+    <title>JointJS+ KitchenSink Application</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="build/package/rappid.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/theme-picker.css">
+
+    <!-- theme-specific application CSS  -->
+    <link rel="stylesheet" type="text/css" href="css/style.dark.css">
+    <link rel="stylesheet" type="text/css" href="css/style.material.css">
+    <link rel="stylesheet" type="text/css" href="css/style.modern.css">
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="app-header">
+            <div class="app-title">
+                <h1>Syncross Editor</h1>
+            </div>
+            <div class="toolbar-container"></div>
+        </div>
+        <div class="app-body">
+            <div class="stencil-container"></div>
+            <div class="paper-container"></div>
+            <div class="inspector-container"></div>
+            <div class="navigator-container"></div>
+        </div>
+    </div>
+
+    <!-- JointJS+ dependencies: -->
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/lodash/lodash.js"></script>
+    <script src="node_modules/backbone/backbone.js"></script>
+    <script src="node_modules/graphlib/dist/graphlib.core.js"></script>
+    <script src="node_modules/dagre/dist/dagre.core.js"></script>
+
+    <script src="build/package/rappid.js"></script>
+
+    <!-- Application files:  -->
+    <script src="js/config/halo.js"></script>
+    <script src="js/config/selection.js"></script>
+    <script src="js/config/inspector.js"></script>
+    <script src="js/config/stencil.js"></script>
+    <script src="js/config/toolbar.js"></script>
+    <script src="js/config/sample-graphs.js"></script>
+    <script src="js/views/main.js"></script>
+    <script src="js/views/theme-picker.js"></script>
+    <script src="js/shapes/elements.js"></script>
+    <script src="js/shapes/links.js"></script>
+    <script src="js/shapes/navigator.js"></script>
+    <!-- <script src="js/index.js"></script> -->
+
+    <!-- Local file warning: -->
+    <div id="message-fs" style="display: none;">
+        <p>The application was open locally using the file protocol. It is recommended to access it trough a <strong>Web
+                server</strong>.</p>
+        <p>Please see <a href="README.md">instructions</a>.</p>
+    </div>
+    <script>
+        // (function () {
+        //     var fs = (document.location.protocol === 'file:');
+        //     var ff = (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1);
+        //     if (fs && !ff) {
+        //         (new joint.ui.Dialog({
+        //             width: 300,
+        //             type: 'alert',
+        //             title: 'Local File',
+        //             content: $('#message-fs').show()
+        //         })).open();
+        //     }
+        // })();
+
+
+
+        /*! JointJS+ v3.7.3 - HTML5 Diagramming Framework - TRIAL VERSION
+
+Copyright (c) 2023 client IO
+
+ 2024-08-26 
+
+
+This Source Code Form is subject to the terms of the JointJS+ Trial License
+, v. 2.0. If a copy of the JointJS+ License was not distributed with this
+file, You can obtain one at https://www.jointjs.com/license
+ or from the JointJS+ archive as was distributed by client IO. See the LICENSE file.*/
+
+
+        // This ES6 version of Kitchen Sink defines everything
+        // in the global variable `App`.
+        var App = window.App || {};
+
+        // Set a default theme.
+        joint.setTheme('modern');
+
+        // See `views/main.js` for details.
+        const app = new App.MainView({ el: '#app' });
+
+        // See `views/theme-picker.js` for details.
+        const themePicker = new App.ThemePicker({ mainView: app });
+        themePicker.render();
+        document.body.appendChild(themePicker.el);
+
+        // Waiting for all the fonts to load before we render the default canvas content.
+        window.addEventListener('load', () => {
+            app.graph.fromJSON(JSON.parse(App.config.sampleGraphs.emergencyProcedure));
+            console.log("Ready app.graph", app.graph);
+
+            let dataObject = {};
+            setTimeout(function () {
+                // app.graph.fromJSON(JSON.parse(App.config.sampleGraphs.emergencyProcedure));
+                console.log("Ready", app.paper.model.attributes.cells.models);
+                let number_of_models = app.paper.model.attributes.cells.models.length;
+                // console.log(number_of_models);
+                // console.log("Ready", app.paper.model.attributes.cells.models[0]);
+                let item_identity_name = 0;
+                for (let element of app.paper.model.attributes.cells.models) {
+
+                    dataObject[element.id] = {};
+                    dataObject[element.id]['id'] = item_identity_name;
+                    dataObject[element.id]['context'] = element;
+                    item_identity_name++
+                }
+            }, 5000);
+            // setInterval(function () {
+            //     let number = Math.floor(Math.random() * 10) + 1 //the + 1 makes it so its not 0.
+            //     app.paper.model.attributes.cells.models[0].attr("label/text", " kWh \n" + number + " google");
+            // }, 5000);
+        });
+
+        // Make the `app` variable available in the console for debugging purposes.
+        window.app = app;
+        console.log('App is ready:', app);
+
+
+    </script>
+
+</body>
+
+</html>
